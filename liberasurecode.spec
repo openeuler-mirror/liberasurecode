@@ -1,6 +1,6 @@
 Name:           liberasurecode
 Version:        1.6.2
-Release:        1
+Release:        2
 Summary:        Erasure Code API library written in C with pluggable backends
 License:        BSD and CRC32
 URL:            https://bitbucket.org/tsg-/liberasurecode/
@@ -44,6 +44,9 @@ developing applications that use %{name}.
 %patch3 -p1
 
 %build
+%if "%toolchain"=="clang"
+export CFLAGS+="$CFLAGS -Wno-strict-prototypes"
+%endif
 autoreconf -i -v
 %configure --disable-static --disable-mmi
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -80,5 +83,8 @@ find $RPM_BUILD_ROOT%{_datadir}/doc -type f -exec chmod a-x {} ';'
 
 
 %changelog
+* Mon Jun 19 2023 zhangxiang <zhangxiang@iscas.ac.cn> - 1.6.2-2
+- Fix clang build error
+
 * Sun Aug 15 2021 OpenStack_SIG <openstack@openeuler.org> - 1.6.2-1
 - Initial release
